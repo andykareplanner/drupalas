@@ -246,6 +246,8 @@ class sspmod_drupalas_Auth_Source_default extends SimpleSAML_Auth_Source {
     //if drupal_uid has a value the authentication has succeeded and we can continue loading the user attributes
     if (!empty($drupal_uid)) {
 
+      global $conf;
+
       //save current directory and change directory so drupal functions work (we use user_load)
       $d = getcwd();
       chdir(DRUPAL_ROOT);
@@ -285,6 +287,8 @@ class sspmod_drupalas_Auth_Source_default extends SimpleSAML_Auth_Source {
           $userKeys[] = $confAttr['drupaluservar'];
           $userAttrNames[$confAttr['drupaluservar']] = $confAttr['callit'];
 
+          $userAttrPrefix[$confAttr['drupaluservar']] = $confAttr['prefix'] === true ? true : false;
+
         }
 
       }
@@ -315,6 +319,12 @@ class sspmod_drupalas_Auth_Source_default extends SimpleSAML_Auth_Source {
               $attributes[$userAttrNames[$userKey]] = $userAttrs[$userKey];
             }
 
+          }
+
+          if($userAttrPrefix[$userKey]){
+            foreach($attributes[$userAttrNames[$userKey]] as $key => $value){
+              $attributes[$userAttrNames[$userKey]][$key] = $conf['site_name'] . '_' . $value;
+            }
           }
 
         }
