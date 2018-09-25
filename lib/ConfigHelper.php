@@ -92,6 +92,18 @@ class sspmod_drupalas_ConfigHelper {
     $this->cookie_name = $config->getString('cookie_name', 'SimpleSAMLAuthBridge');
     $this->cookie_secure = $config->getBoolean('cookie_secure', FALSE);
     $this->cookie_domain = $config->getString('cookie_domain', NULL);
+
+    if(!$this->drupal_login_url || !$this->drupal_logout_url){
+
+      // Create base URL.
+      $http_protocol = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
+      $base_root = $http_protocol . '://' . $_SERVER['HTTP_HOST'];
+
+      $this->drupal_login_url = $base_root . '/user';
+      $this->drupal_logout_url = $base_root . '/user/logout';
+
+    }
+
   }
 
   /**
